@@ -9,6 +9,7 @@ This is a GtkUI and WebUI plugin.
 
 Features
 --------
+****** I have added remove "unregistered torrent" on iPT.
 - Select how many torrents are allowed at the same time.
 - Choose to remove or pause them based on multiple criteria age, seeders, seed time or ratio.
 - Only remove torrents if under a certain HDD space threshold.
