@@ -366,8 +366,8 @@ class Core(CorePluginBase):
                     if "unregistered torrent" in str(t.get_status(['tracker_status'])['tracker_status'].lower()):
 	                    log.debug(t.get_status(['tracker_status'])['tracker_status'])
 	                    log.debug(t.get_status(['tracker_host'])['tracker_host'])
-		                    if self.remove_torrent(torrentmanager, i, remove_data): 
-								changed = True
+	                            if self.remove_torrent(torrentmanager, i, remove_data):
+	                                    changed = True
                 # Get result of first condition test
                 filter_1 = filter_funcs.get(
                     self.config['filter'],
