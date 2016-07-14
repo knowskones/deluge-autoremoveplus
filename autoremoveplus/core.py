@@ -325,7 +325,7 @@ class Core(CorePluginBase):
             max_seeds -= len(ignored_torrents)
             if max_seeds < 0:
                 max_seeds = 0
-
+                
         # Alternate sort by primary and secondary criteria
         torrents.sort(
             key=lambda x: (
@@ -340,17 +340,16 @@ class Core(CorePluginBase):
             ),
             reverse=False
         )
-
+        
         changed = False
         
-
         # remove or pause these torrents
         for i, t in torrents[max_seeds:]:
-
+            
             # check if free disk space below minimum
             if self.check_min_space():
                 break  # break the loop, we have enough space
-
+            
             log.debug(
                 "AutoRemovePlus: Remove torrent %s, %s"
                 % (i, t.get_status(['name'])['name'])
@@ -361,13 +360,13 @@ class Core(CorePluginBase):
             log.debug(
                 filter_funcs.get(self.config['filter2'], _get_ratio)((i, t))
             )
-
+            
             if enabled:
-                    if "unregistered torrent" in str(t.get_status(['tracker_status'])['tracker_status'].lower()):
-	                    log.debug(t.get_status(['tracker_status'])['tracker_status'])
-	                    log.debug(t.get_status(['tracker_host'])['tracker_host'])
-	                            if self.remove_torrent(torrentmanager, i, remove_data):
-	                                    changed = True
+                if "unregistered torrent" in str(t.get_status(['tracker_status'])['tracker_status'].lower()):
+                    log.debug(t.get_status(['tracker_status'])['tracker_status'])
+                    log.debug(t.get_status(['tracker_host'])['tracker_host'])
+                    if self.remove_torrent(torrentmanager, i, remove_data):
+                        changed = True
                 # Get result of first condition test
                 filter_1 = filter_funcs.get(
                     self.config['filter'],
