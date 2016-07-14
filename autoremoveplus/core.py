@@ -262,7 +262,7 @@ class Core(CorePluginBase):
             except:
                 continue
             else:
-                if not finished:
+                if not finished: # remove unregistered torrent on iPT tracker
                         if "unregistered torrent" in str(t.get_status(['tracker_status'])['tracker_status']):
                             if self.remove_torrent(torrentmanager, i, remove_data): 
                                 changed = True
