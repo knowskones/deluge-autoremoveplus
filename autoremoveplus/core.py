@@ -50,7 +50,7 @@ from twisted.internet.task import LoopingCall, deferLater
 import time
 
 DEFAULT_PREFS = {
-    'max_seeds': -1,
+    'max_seeds': 0,
     'filter': 'func_ratio',
     'count_exempt': False,
     'remove_data': False,
