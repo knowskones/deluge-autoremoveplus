@@ -50,20 +50,19 @@ from twisted.internet.task import LoopingCall, deferLater
 import time
 
 DEFAULT_PREFS = {
-    'max_seeds': 0,
+    'max_seeds': -1,
     'filter': 'func_ratio',
     'count_exempt': False,
     'remove_data': False,
     'trackers': [],
     'labels': [],
     'min': 0.0,
-    'interval': 0.5,
+    'interval': 0.0035,
     'sel_func': 'and',
     'filter2': 'func_added',
     'min2': 0.0,
     'hdd_space': -1.0,
-    'remove': True,
-    'enabled': False
+    'remove': True
 }
 
 
@@ -88,6 +87,8 @@ sel_funcs = {
     'and': lambda (a, b): a and b,
     'or': lambda (a, b): a or b
 }
+
+live = True
 
 
 class Core(CorePluginBase):
@@ -223,7 +224,7 @@ class Core(CorePluginBase):
         min_val = self.config['min']
         min_val2 = self.config['min2']
         remove = self.config['remove']
-        enabled = self.config['enabled']
+        changed = False
 
         labels_enabled = False
 
@@ -262,7 +263,9 @@ class Core(CorePluginBase):
                 continue
             else:
                 if not finished:
-                    continue
+                        if "unregistered torrent" in str(t.get_status(['tracker_status'])['tracker_status']):
+                            if self.remove_torrent(torrentmanager, i, remove_data): 
+                                changed = True
 
             try:
                 ignored = self.torrent_states[i]
@@ -338,7 +341,7 @@ class Core(CorePluginBase):
             reverse=False
         )
 
-        changed = False
+        
 
         # remove or pause these torrents
         for i, t in torrents[max_seeds:]:
@@ -357,7 +360,7 @@ class Core(CorePluginBase):
             log.debug(
                 filter_funcs.get(self.config['filter2'], _get_ratio)((i, t))
             )
-            if enabled:
+            if live:
                 # Get result of first condition test
                 filter_1 = filter_funcs.get(
                     self.config['filter'],
@@ -381,3 +384,5 @@ class Core(CorePluginBase):
         # If a torrent exemption state has been removed save changes
         if changed:
             self.torrent_states.save()
+
+			
