@@ -62,7 +62,8 @@ DEFAULT_PREFS = {
     'filter2': 'func_added',
     'min2': 0.0,
     'hdd_space': -1.0,
-    'remove': True
+    'remove': True,
+    'enabled': False
 }
 
 
@@ -88,7 +89,8 @@ sel_funcs = {
     'or': lambda (a, b): a or b
 }
 
-live = True
+
+
 
 
 class Core(CorePluginBase):
@@ -224,7 +226,7 @@ class Core(CorePluginBase):
         min_val = self.config['min']
         min_val2 = self.config['min2']
         remove = self.config['remove']
-        changed = False
+        enabled = self.config['enabled']
 
         labels_enabled = False
 
@@ -262,10 +264,8 @@ class Core(CorePluginBase):
             except:
                 continue
             else:
-                if not finished: # remove unregistered torrent on iPT tracker
-                        if "unregistered torrent" in str(t.get_status(['tracker_status'])['tracker_status']):
-                            if self.remove_torrent(torrentmanager, i, remove_data): 
-                                changed = True
+                if not finished:
+				    continue
 
             try:
                 ignored = self.torrent_states[i]
@@ -341,6 +341,7 @@ class Core(CorePluginBase):
             reverse=False
         )
 
+        changed = False
         
 
         # remove or pause these torrents
@@ -360,7 +361,13 @@ class Core(CorePluginBase):
             log.debug(
                 filter_funcs.get(self.config['filter2'], _get_ratio)((i, t))
             )
-            if live:
+
+            if enabled:
+			    if "unregistered torrent" in str(t.get_status(['tracker_status'])['tracker_status'].lower()):
+                    log.debug(t.get_status(['tracker_status'])['tracker_status'])
+                    log.debug(t.get_status(['tracker_host'])['tracker_host'])
+                    if self.remove_torrent(torrentmanager, i, remove_data): 
+						changed = True
                 # Get result of first condition test
                 filter_1 = filter_funcs.get(
                     self.config['filter'],
@@ -384,5 +391,3 @@ class Core(CorePluginBase):
         # If a torrent exemption state has been removed save changes
         if changed:
             self.torrent_states.save()
-
-			
