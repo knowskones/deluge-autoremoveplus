@@ -265,9 +265,7 @@ class Core(CorePluginBase):
                 continue
             else:
                 if not finished:
-                    log.debug(t.get_status(['tracker_status'])['tracker_status'])
-                    log.debug(t.get_status(['tracker_host'])['tracker_host'])
-
+                    pass
             try:
                 ignored = self.torrent_states[i]
             except KeyError:
@@ -363,9 +361,14 @@ class Core(CorePluginBase):
             )
             
             if enabled:
-                if "unregistered torrent" in str(t.get_status(['tracker_status'])['tracker_status'].lower()):
+                if "unregistered torrent" in t.get_status(['tracker_status'])['tracker_status']:
+                    a_deb = t.get_status(['tracker_status'])['tracker_status']
+                    log.debug(a_deb)
+                    log.debug(type(a_deb))
                     if self.remove_torrent(torrentmanager, i, remove_data):
                         changed = True
+                else:
+                    pass
                 # Get result of first condition test
                 filter_1 = filter_funcs.get(
                     self.config['filter'],
