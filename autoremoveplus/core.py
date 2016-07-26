@@ -200,8 +200,11 @@ class Core(CorePluginBase):
                 "AutoRemovePlus: Problems pausing torrent: %s", e
             )
 
-    def remove_torrent(self, torrentmanager, tid, remove_data):
+    def remove_torrent(self, torrentmanager, torrent, tid, remove_data):
         try:
+            torrent.pause()
+            torrent.resume()
+            time.sleep(2)
             torrentmanager.remove(tid, remove_data=remove_data)
         except Exception, e:
             log.warn(
@@ -386,7 +389,7 @@ class Core(CorePluginBase):
                     if not remove:
                         self.pause_torrent(t)
                     else:
-                        if self.remove_torrent(torrentmanager, i, remove_data):
+                        if self.remove_torrent(torrentmanager, t, i, remove_data):
                             changed = True
 
         # If a torrent exemption state has been removed save changes
